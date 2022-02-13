@@ -154,7 +154,7 @@ app.post('/api/v1/deductions/image', upload.single('photo'), (req, res) => {
 });
 
 app.post('/api/v1/deductions', (req, res) => {
-    const {amount, description, budgetsID, image} = req.body;
+    const {amount, description, budgetsID, image, tags} = req.body;
 
     if(image){
         const compressedImage = path.join(__dirname, 'images', image);
@@ -168,9 +168,8 @@ app.post('/api/v1/deductions', (req, res) => {
 
     let rawdata = fs.readFileSync('./config/deductions.json');
     let myDeductions = JSON.parse(rawdata);
-
     if(myDeductions){
-        const newDeduction = {id: uuidv4(), amount, description, budgetsID, image}
+        const newDeduction = {id: uuidv4(), amount, description, tags, budgetsID, image}
         const allDeductions = [newDeduction, ...myDeductions];
 
         let newData = JSON.stringify(allDeductions);
@@ -178,6 +177,48 @@ app.post('/api/v1/deductions', (req, res) => {
         try {
             fs.writeFileSync('./config/deductions.json', newData);
             return res.json(newDeduction);
+
+        } catch (error) {
+            return res.status(500).json({
+                success: false,
+                message: error.message
+            })
+        }
+    }else{
+        return res.status(500).json({
+            success: false,
+            message: 'Something happended the data file is not working'
+        })
+    }
+ 
+});
+
+app.post('/api/v1/deductions/:id', (req, res) => {
+    const {image} = req.body;
+    if(!image) return; //! fix later too lazy now
+
+    const compressedImage = path.join(__dirname, 'images', image);
+
+    sharp(image).resize(1000, 1000).jpeg({
+        quality: 70,
+        chromaSubsampling: '4:4:4'
+    }).toFile(compressedImage, (err, info) => {})
+
+    let rawdata = fs.readFileSync('./config/deductions.json');
+    let myDeductions = JSON.parse(rawdata);
+    if(myDeductions){
+        const updatedDeductions = myDeductions.map(element => {
+            if(element.id === req.params.id){
+                element.image = image;
+            }
+            return element
+        });
+
+        let newData = JSON.stringify(updatedDeductions);
+
+        try {
+            fs.writeFileSync('./config/deductions.json', newData);
+            return res.json({success: false});
 
         } catch (error) {
             return res.status(500).json({
