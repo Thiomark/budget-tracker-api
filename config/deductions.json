@@ -1,5 +1,21 @@
 [
     {
+        "id": "786269df-f973-477d-8167-8386aa431502",
+        "amount": -300,
+        "description": "Rosebank Registration",
+        "tags": "School",
+        "budgetsID": "b51e7448-aba3-4fe8-be1e-5db10cf9b3af",
+        "image": null
+    },
+    {
+        "id": "3459e0e8-4dbb-4867-9810-6bd0aa31ebf0",
+        "amount": -1600,
+        "description": "Rosebank Deposite",
+        "tags": "School ",
+        "budgetsID": "b51e7448-aba3-4fe8-be1e-5db10cf9b3a",
+        "image": null
+    },
+    {
         "id": "c3f5236a-c2aa-4722-a0e1-b99ef59d659d",
         "amount": -1080,
         "description": "Paying Mr Sabata for fixing the geyser",
